@@ -1,30 +1,30 @@
-import styles from "../styles/Cart.module.css";
-import Image from "next/image";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import styles from '../../styles/Cart.module.css';
+import Image from 'next/image';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import {
   PayPalScriptProvider,
   PayPalButtons,
   usePayPalScriptReducer,
-} from "@paypal/react-paypal-js";
-import axios from "axios";
-import { useRouter } from "next/router";
-import { reset } from "../redux/cartSlice";
-import OrderDetail from "../components/OrderDetail";
+} from '@paypal/react-paypal-js';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import { reset } from '../../redux/cartSlice';
+import OrderDetail from '../../components/OrderDetail';
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
   const [open, setOpen] = useState(false);
   const [cash, setCash] = useState(false);
   const amount = cart.total;
-  const currency = "USD";
-  const style = { layout: "vertical" };
+  const currency = 'USD';
+  const style = { layout: 'vertical' };
   const dispatch = useDispatch();
   const router = useRouter();
 
   const createOrder = async (data) => {
     try {
-      const res = await axios.post("http://localhost:3000/api/orders", data);
+      const res = await axios.post('http://localhost:3000/api/orders', data);
       if (res.status === 201) {
         dispatch(reset());
         router.push(`/orders/${res.data._id}`);
@@ -34,15 +34,11 @@ const Cart = () => {
     }
   };
 
-  // Custom component to wrap the PayPalButtons and handle currency changes
   const ButtonWrapper = ({ currency, showSpinner }) => {
-    // usePayPalScriptReducer can be use only inside children of PayPalScriptProviders
-    // This is the main reason to wrap the PayPalButtons in a new component
     const [{ options, isPending }, dispatch] = usePayPalScriptReducer();
-
     useEffect(() => {
       dispatch({
-        type: "resetOptions",
+        type: 'resetOptions',
         value: {
           ...options,
           currency: currency,
@@ -71,7 +67,6 @@ const Cart = () => {
                 ],
               })
               .then((orderId) => {
-                // Your code here after create the order
                 return orderId;
               });
           }}
@@ -160,19 +155,17 @@ const Cart = () => {
             <div className={styles.paymentMethods}>
               <button
                 className={styles.payButton}
-                onClick={() => setCash(true)}
-              >
+                onClick={() => setCash(true)}>
                 CASH ON DELIVERY
               </button>
               <PayPalScriptProvider
                 options={{
-                  "client-id":
-                    "ATTL8fDJKfGzXNH4VVuDy1qW4_Jm8S0sqmnUTeYtWpqxUJLnXIn90V8YIGDg-SNPaB70Hg4mko_fde4-",
-                  components: "buttons",
-                  currency: "USD",
-                  "disable-funding": "credit,card,p24",
-                }}
-              >
+                  'client-id':
+                    'ATTL8fDJKfGzXNH4VVuDy1qW4_Jm8S0sqmnUTeYtWpqxUJLnXIn90V8YIGDg-SNPaB70Hg4mko_fde4-',
+                  components: 'buttons',
+                  currency: 'USD',
+                  'disable-funding': 'credit,card,p24',
+                }}>
                 <ButtonWrapper currency={currency} showSpinner={false} />
               </PayPalScriptProvider>
             </div>
