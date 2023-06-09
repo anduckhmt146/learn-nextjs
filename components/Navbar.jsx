@@ -35,11 +35,6 @@ const Navbar = () => {
             <Image src="/img/cart.png" alt="" width="30px" height="30px" />
             <div className={styles.counter}>{quantity}</div>
           </div>
-          <div style={{ marginLeft: 20, color: 'white' }}>
-            <Link href={'/admin/login'} passHref>
-              Login
-            </Link>
-          </div>
         </div>
       </Link>
     </div>
