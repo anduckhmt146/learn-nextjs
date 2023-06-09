@@ -1,9 +1,9 @@
-import styles from "../../styles/Product.module.css";
-import Image from "next/image";
-import { useState } from "react";
-import axios from "axios";
-import { useDispatch } from "react-redux";
-import { addProduct } from "../../redux/cartSlice";
+import styles from '../../styles/Product.module.css';
+import Image from 'next/image';
+import { useState } from 'react';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { addProduct } from '../../redux/cartSlice';
 
 const Product = ({ pizza }) => {
   const [price, setPrice] = useState(pizza.prices[0]);
@@ -35,7 +35,7 @@ const Product = ({ pizza }) => {
   };
 
   const handleClick = () => {
-    dispatch(addProduct({...pizza, extras, price, quantity}));
+    dispatch(addProduct({ ...pizza, extras, price, quantity }));
   };
 
   return (
@@ -95,7 +95,23 @@ const Product = ({ pizza }) => {
   );
 };
 
-export const getServerSideProps = async ({ params }) => {
+export const getStaticPaths = async () => {
+  const res = await axios.get(`http://localhost:3000/api/products`);
+  const data = await res.data;
+  const paths = data.map((path) => {
+    return {
+      params: {
+        id: `${path._id}`,
+      },
+    };
+  });
+  return {
+    paths,
+    fallback: false,
+  };
+};
+
+export const getStaticProps = async ({ params }) => {
   const res = await axios.get(
     `http://localhost:3000/api/products/${params.id}`
   );
